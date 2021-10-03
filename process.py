@@ -1,4 +1,5 @@
 import os
+import shutil
 import re
 import logging
 from typing import List, Tuple
@@ -10,7 +11,9 @@ replacements: List[Tuple[str, str]] = [
     (r"\#(\[\[.+\]\])", r"\1"),  # '#[[...]]' -> '[[..]]'
     (r"\[\[(.+)\]\]", r"\1"),  # '[[..]]' -> '..'
     (r"\#(\w*)\b", r"\1"),  # '#...' -> '...'
-    (r"\*\*(.*)\*\*", r"<b>\1</b>"),  # md bold to html bold
+    # (r"\*\*(.*)\*\*", r"<b>\1</b>"),  # md bold to html bold
+    (r"\*\*", r""),  # remove bold
+    (r"\_\_", r""),  # remove underline
     (r"\$\$(.*?)\$\$", r"\(\1\)"),  # '$$...$$' -> '\(...\)'
 ]
 
@@ -36,10 +39,14 @@ def main():
             logger.info(f"skipped {f} - not markdown")
 
         infile = os.path.join("inbox", f)
+        copyfile = os.path.join("raw", f)
         outfile = os.path.join("processed", f)
 
         # process
         processed = process(infile)
+
+        # copy
+        shutil.copy(infile, copyfile)
 
         # move
         os.rename(infile, outfile)

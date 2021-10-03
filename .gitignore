@@ -1,5 +1,6 @@
-inbox/*
-processed/*
+inbox/*.md
+processed/*.md
+raw/*.md
 
 
 
